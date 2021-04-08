@@ -38,10 +38,10 @@ T bilinear_interp_cpu(
     const int width,
     const int height)
 {
-  int x1 = floor(x);
-  int x2 = ceil(x);
-  int y1 = floor(y);
-  int y2 = ceil(y);
+  int x1 = floorf(x);
+  int x2 = ceilf(x);
+  int y1 = floorf(y);
+  int y2 = ceilf(y);
   T dist_x = static_cast<T>(x - x1);
   T dist_y = static_cast<T>(y - y1);
   T value11 = data[y1 * width + x1];
@@ -86,10 +86,10 @@ template <typename T>
     // [start, end) interval for spatial sampling
     const T *offset_bottom_rois = bottom_rois + n * 5;
     int roi_batch_ind = offset_bottom_rois[0];
-    T roi_start_w = static_cast<T>(round(offset_bottom_rois[1])) * spatial_scale - 0.5;
-    T roi_start_h = static_cast<T>(round(offset_bottom_rois[2])) * spatial_scale - 0.5;
-    T roi_end_w = static_cast<T>(round(offset_bottom_rois[3]) + 1.) * spatial_scale - 0.5;
-    T roi_end_h = static_cast<T>(round(offset_bottom_rois[4]) + 1.) * spatial_scale - 0.5;
+    T roi_start_w = static_cast<T>(roundf(offset_bottom_rois[1])) * spatial_scale - 0.5;
+    T roi_start_h = static_cast<T>(roundf(offset_bottom_rois[2])) * spatial_scale - 0.5;
+    T roi_end_w = static_cast<T>(roundf(offset_bottom_rois[3]) + 1.) * spatial_scale - 0.5;
+    T roi_end_h = static_cast<T>(roundf(offset_bottom_rois[4]) + 1.) * spatial_scale - 0.5;
 
     // Force too small ROIs to be 1x1
     T roi_width = std::max(roi_end_w - roi_start_w, T(0.1)); //avoid 0
@@ -102,8 +102,8 @@ template <typename T>
     T sub_bin_size_h = bin_size_h / static_cast<T>(sample_per_part);
     T sub_bin_size_w = bin_size_w / static_cast<T>(sample_per_part);
 
-    int part_h = floor(static_cast<T>(ph) / pooled_height * part_size);
-    int part_w = floor(static_cast<T>(pw) / pooled_width * part_size);
+    int part_h = floorf(static_cast<T>(ph) / pooled_height * part_size);
+    int part_w = floorf(static_cast<T>(pw) / pooled_width * part_size);
     int class_id = ctop / channels_each_class;
     T trans_x = no_trans ? static_cast<T>(0) : bottom_trans[(((n * num_classes + class_id) * 2) * part_size + part_h) * part_size + part_w] * trans_std;
     T trans_y = no_trans ? static_cast<T>(0) : bottom_trans[(((n * num_classes + class_id) * 2 + 1) * part_size + part_h) * part_size + part_w] * trans_std;
@@ -115,8 +115,8 @@ template <typename T>
 
     T sum = 0;
     int count = 0;
-    int gw = floor(static_cast<T>(pw) * group_size / pooled_width);
-    int gh = floor(static_cast<T>(ph) * group_size / pooled_height);
+    int gw = floorf(static_cast<T>(pw) * group_size / pooled_width);
+    int gh = floorf(static_cast<T>(ph) * group_size / pooled_height);
     gw = std::min(std::max(gw, 0), group_size - 1);
     gh = std::min(std::max(gh, 0), group_size - 1);
 
@@ -179,10 +179,10 @@ void DeformablePSROIPoolBackwardAccKernelCpu(
     // [start, end) interval for spatial sampling
     const T *offset_bottom_rois = bottom_rois + n * 5;
     int roi_batch_ind = offset_bottom_rois[0];
-    T roi_start_w = static_cast<T>(round(offset_bottom_rois[1])) * spatial_scale - 0.5;
-    T roi_start_h = static_cast<T>(round(offset_bottom_rois[2])) * spatial_scale - 0.5;
-    T roi_end_w = static_cast<T>(round(offset_bottom_rois[3]) + 1.) * spatial_scale - 0.5;
-    T roi_end_h = static_cast<T>(round(offset_bottom_rois[4]) + 1.) * spatial_scale - 0.5;
+    T roi_start_w = static_cast<T>(roundf(offset_bottom_rois[1])) * spatial_scale - 0.5;
+    T roi_start_h = static_cast<T>(roundf(offset_bottom_rois[2])) * spatial_scale - 0.5;
+    T roi_end_w = static_cast<T>(roundf(offset_bottom_rois[3]) + 1.) * spatial_scale - 0.5;
+    T roi_end_h = static_cast<T>(roundf(offset_bottom_rois[4]) + 1.) * spatial_scale - 0.5;
     
     // Force too small ROIs to be 1x1
     T roi_width = std::max(roi_end_w - roi_start_w, T(0.1)); //avoid 0
@@ -195,8 +195,8 @@ void DeformablePSROIPoolBackwardAccKernelCpu(
     T sub_bin_size_h = bin_size_h / static_cast<T>(sample_per_part);
     T sub_bin_size_w = bin_size_w / static_cast<T>(sample_per_part);
 
-    int part_h = floor(static_cast<T>(ph) / pooled_height * part_size);
-    int part_w = floor(static_cast<T>(pw) / pooled_width * part_size);
+    int part_h = floorf(static_cast<T>(ph) / pooled_height * part_size);
+    int part_w = floorf(static_cast<T>(pw) / pooled_width * part_size);
     int class_id = ctop / channels_each_class;
     T trans_x = no_trans ? static_cast<T>(0) : bottom_trans[(((n * num_classes + class_id) * 2) * part_size + part_h) * part_size + part_w] * trans_std;
     T trans_y = no_trans ? static_cast<T>(0) : bottom_trans[(((n * num_classes + class_id) * 2 + 1) * part_size + part_h) * part_size + part_w] * trans_std;
@@ -213,8 +213,8 @@ void DeformablePSROIPoolBackwardAccKernelCpu(
     T diff_val = top_diff[index] / top_count[index];
     const T *offset_bottom_data = bottom_data + roi_batch_ind * channels * height * width;
     T *offset_bottom_data_diff = bottom_data_diff + roi_batch_ind * channels * height * width;
-    int gw = floor(static_cast<T>(pw) * group_size / pooled_width);
-    int gh = floor(static_cast<T>(ph) * group_size / pooled_height);
+    int gw = floorf(static_cast<T>(pw) * group_size / pooled_width);
+    int gh = floorf(static_cast<T>(ph) * group_size / pooled_height);
     gw = std::min(std::max(gw, 0), group_size - 1);
     gh = std::min(std::max(gh, 0), group_size - 1);
 
@@ -233,10 +233,10 @@ void DeformablePSROIPoolBackwardAccKernelCpu(
         h = std::min(std::max(h, T(0.)), height - T(1.));
         int c = (ctop * group_size + gh) * group_size + gw;
         // backward on feature
-        int x0 = floor(w);
-        int x1 = ceil(w);
-        int y0 = floor(h);
-        int y1 = ceil(h);
+        int x0 = floorf(w);
+        int x1 = ceilf(w);
+        int y0 = floorf(h);
+        int y1 = ceilf(h);
         T dist_x = w - x0, dist_y = h - y0;
         T q00 = (1 - dist_x) * (1 - dist_y);
         T q01 = (1 - dist_x) * dist_y;
