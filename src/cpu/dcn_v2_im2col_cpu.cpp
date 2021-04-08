@@ -27,8 +27,8 @@ inline int GET_BLOCKS(const int N)
 float dmcn_im2col_bilinear_cpu(const float *bottom_data, const int data_width,
                            const int height, const int width, float h, float w)
 {
-  int h_low = floor(h);
-  int w_low = floor(w);
+  int h_low = floorf(h);
+  int w_low = floorf(w);
   int h_high = h_low + 1;
   int w_high = w_low + 1;
 
@@ -64,8 +64,8 @@ float dmcn_get_gradient_weight_cpu(float argmax_h, float argmax_w,
     return 0;
   }
 
-  int argmax_h_low = floor(argmax_h);
-  int argmax_w_low = floor(argmax_w);
+  int argmax_h_low = floorf(argmax_h);
+  int argmax_w_low = floorf(argmax_w);
   int argmax_h_high = argmax_h_low + 1;
   int argmax_w_high = argmax_w_low + 1;
 
@@ -91,8 +91,8 @@ float dmcn_get_coordinate_weight_cpu(float argmax_h, float argmax_w,
     return 0;
   }
 
-  int argmax_h_low = floor(argmax_h);
-  int argmax_w_low = floor(argmax_w);
+  int argmax_h_low = floorf(argmax_h);
+  int argmax_w_low = floorf(argmax_w);
   int argmax_h_high = argmax_h_low + 1;
   int argmax_w_high = argmax_w_low + 1;
 
